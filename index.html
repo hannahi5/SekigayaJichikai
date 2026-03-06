@@ -118,6 +118,16 @@
     liff.init({ liffId: LIFF_ID })
         .then(async () => {  
             isLiffInitialized = true;
+
+        // 外部ブラウザ（LINE外）かどうかをチェック
+        if (!liff.isInClient()) {
+            // ブラウザで開いている場合の処理
+            alert("この画面はLINEアプリ専用です。ブラウザでは閉じることができないため、LINEから開き直してください。");
+            // 必要ならここで処理を止めるか、案内ページへ飛ばす
+            // window.location.href = "https://your-info-page.com"; 
+            return; // これ以降の処理（ログインやGAS送信）を実行させない
+        }
+            
             if (!liff.isLoggedIn()) { 
                 liff.login(); 
             } else {
