@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>関ヶ谷自治会 公式LINE 利用登録・更新</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: -apple-system, sans-serif; padding: 15px; background-color: #f4f7f6; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
+        h2 { font-size: 18px; color: #1DB446; margin-bottom: 15px; border-left: 4px solid #1DB446; padding-left: 10px; }
+        .form-group { margin-bottom: 15px; }
+        
+        /* ラベルと必須マークのスタイル */
+        label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .required { color: #e53935; font-size: 11px; margin-left: 5px; vertical-align: middle; border: 1px solid #e53935; padding: 1px 4px; border-radius: 3px; }
+
+        .name-flex { display: flex; gap: 10px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: white; }
+        .hint { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.4; }
+        .option-list { border: 1px solid #eee; border-radius: 8px; padding: 10px; background: #fafafa; }
+        .option { display: flex; align-items: center; padding: 8px 0; cursor: pointer; border-bottom: 1px solid #eee; }
+        .option:last-child { border-bottom: none; }
+        input[type="checkbox"] { width: 20px; height: 20px; margin-right: 10px; accent-color: #1DB446; }
+        .btn { display: block; width: 100%; padding: 15px; background: #1DB446; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; text-align: center; }
+        .btn:active { background: #179c3d; }
+        .btn:disabled { background: #ccc; }
+
+        #success-message { display: none; text-align: center; padding: 40px 10px; }
+        #success-message h3 { color: #1DB446; margin-bottom: 10px; }
+        
+        /* 例外セクション */
+      .extra-section { margin-top: 30px; border-top: 1px solid #ccc; pt: 15px; padding-top: 25px;}
+      .option-special { display: block; color: #d9534f; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="input-form">
+            <h2>関ヶ谷自治会 公式LINE 利用登録・更新</h2>
+            
+            <div class="form-group">
+                <label>お名前<span class="required">必須</span></label>
+                <div class="name-flex">
+                    <input type="text" id="lastName" placeholder="姓">
+                    <input type="text" id="firstName" placeholder="名">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>班番号（1〜101）<span class="required">必須</span></label>
+                <input type="number" id="hanBan" placeholder="数字で入力" min="1" max="101" inputmode="numeric">
+                <p class="hint">※複数の班がある場合は、小さい方の班番号を入力してください</p>
+            </div>
+
+            <div class="form-group">
+                <label>戸番（1〜19）<span class="required">必須</span></label>
+                <input type="number" id="koban" placeholder="数字で入力" min="1" max="19" inputmode="numeric">
+            </div>
+
+            <div class="form-group">
+                <label>年代</label>
+                <select id="ageGeneration">
+                    <option value="">選択してください</option>
+                    <option value="10代以下">10代以下</option>
+                    <option value="20代">20代</option>
+                    <option value="30代">30代</option>
+                    <option value="40代">40代</option>
+                    <option value="50代">50代</option>
+                    <option value="60代">60代</option>
+                    <option value="70代">70代</option>
+                    <option value="80代以上">80代以上</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>該当する役職（役職の複数選択可）</label>
+                <div class="option-list">
+                    <label class="option"><input type="checkbox" name="role" value="一般" id="role-general" checked> 一般（役職なし）</label>
+                    <label class="option"><input type="checkbox" name="role" value="2026前期 - 地区長"> 2026前期 - 地区長</label>
+                    <label class="option"><input type="checkbox" name="role" value="2026前期 - 班長"> 2026前期 - 班長</label>
+                    <label class="option"><input type="checkbox" name="role" value="2026前期 - 班長（代理）"> 2026前期 - 班長（代理）</label>
+                    <label class="option"><input type="checkbox" name="role" value="防災部"> 防災部</label>
+                    <label class="option"><input type="checkbox" name="role" value="その他役員"> その他役員</label>
+                </div>
+            </div>
+            <div class="extra-section">
+              <label class="option-special">
+                <input type="checkbox" name="non_member" id="nonMember" value="YES"> 
+                会員以外
+              </label>
+                   <p class="hint">※会員以外の方は、お名前の入力のみ必須です</p>
+            
+            </div>            
+            <button class="btn" id="submitBtn" onclick="submitForm()">この内容で登録する</button>
+        </div>
+
+        <div id="success-message">
+            <h3>Check!</h3>
+            <p>登録・更新が完了しました。</p>
+            <p>ご協力ありがとうございました。</p>
+            <button class="btn" onclick="liff.closeWindow()">閉じる</button>
+        </div>
+    </div>
+
+
+<script>
+    // ==========================================
+    // 1. 【設定値】ここを最新のものに貼り替えてください
+    // ==========================================
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxwhLykKaj1Xvcx2f5yqEFTQTar5niZ7M_M8wYbtGTkKdjDTK4OQEGintxmUl14wksEmQ/exec";
+    const LIFF_ID = "2009310809-0MVo7qOg";
+    
+    let isLiffInitialized = false;
+
+    // ==========================================
+    // 2. 【初期化処理】
+    // ==========================================
+    liff.init({ liffId: LIFF_ID })
+        .then(async () => {  
+            isLiffInitialized = true;
+            if (!liff.isLoggedIn()) { 
+                liff.login(); 
+            } else {
+                // ★追加機能：ページを開いた瞬間に「仮登録」を送信
+                try {
+                    const profile = await liff.getProfile();
+                    fetch(GAS_URL, {
+                        method: "POST",
+                        mode: "no-cors", // これが必要
+                        body: JSON.stringify({ 
+                            action: "temp_register", 
+                            userId: profile.userId, 
+                            displayName: profile.displayName,
+                            deviceInfo: navigator.userAgent
+                        })
+                    });
+                    console.log("仮登録ログ送信完了");
+                } catch (e) {
+                    console.error("仮登録送信失敗", e);
+                }
+            }
+        })
+        .catch((err) => {
+            console.error("LIFF初期化失敗", err);
+        });
+    // 画面が完全に読み込まれてから動作を開始する（エラー防止）
+    window.onload = function() {
+        const hanInput = document.getElementById("hanBan");
+        const nonMemberCheck = document.getElementById("nonMember");
+        
+        if (hanInput && nonMemberCheck) {
+            // 1. 班番号入力時の制御
+            hanInput.addEventListener("input", () => {
+                if (hanInput.value.length > 0) {
+                    nonMemberCheck.disabled = true;
+                    nonMemberCheck.parentElement.style.opacity = "0.5";
+                } else {
+                    nonMemberCheck.disabled = false;
+                    nonMemberCheck.parentElement.style.opacity = "1";
+                }
+            });
+            
+            // 2. 「会員以外」チェック時の制御
+            nonMemberCheck.addEventListener("change", () => {
+                if (nonMemberCheck.checked) {
+                    hanInput.disabled = true;
+                    hanInput.value = "";
+                    hanInput.style.backgroundColor = "#f0f0f0";
+                } else {
+                    hanInput.disabled = false;
+                    hanInput.style.backgroundColor = "#ffffff";
+                }
+            });
+        }
+
+        // 役職チェックボックスの排他制御（一般 vs その他）
+        document.addEventListener('change', (e) => {
+            if (e.target.name === 'role') {
+                const generalCb = document.getElementById('role-general');
+                const otherCbs = Array.from(document.querySelectorAll('input[name="role"]:not(#role-general)'));
+                if (e.target === generalCb && generalCb.checked) {
+                    otherCbs.forEach(cb => cb.checked = false);
+                } else if (e.target !== generalCb && e.target.checked) {
+                    generalCb.checked = false;
+                }
+                if (document.querySelectorAll('input[name="role"]:checked').length === 0) {
+                    generalCb.checked = true;
+                }
+            }
+        });
+    };
+
+    // ==========================================
+    // 3. 【メイン機能】バリデーションと送信
+    // ==========================================
+    async function submitForm() {
+        if (!isLiffInitialized) {
+            alert("LIFFの準備ができていません。再読み込みしてください。");
+            return;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        const isNonMemberChecked = document.getElementById("nonMember").checked;
+        
+        const lastName = document.getElementById('lastName').value.trim();
+        const firstName = document.getElementById('firstName').value.trim();
+        const ageGeneration = document.getElementById('ageGeneration').value; 
+        const hanStr = document.getElementById('hanBan').value.trim();
+        const kobanStr = document.getElementById('koban').value.trim();
+
+        // --- バリデーション ---
+        if (!isNonMemberChecked) {
+            // 自治会員の場合
+            if (!lastName || !firstName || !hanStr || !kobanStr) {
+                alert("自治会員様は、お名前、班番号、戸番を必ず入力してください。");
+                return;
+            }
+            const han = parseInt(hanStr, 10);
+            if (isNaN(han) || han < 1 || han > 101) {
+                alert("班番号は1〜101の間で正しく入力してください。");
+                return;
+            }
+        } else {
+            // 会員以外（GUEST）の場合
+            if (!lastName || !firstName) {
+                alert("お名前を入力してください。");
+                return;
+            }
+        }
+
+        // ボタンの無効化（二重送信防止）
+        btn.disabled = true;
+        btn.innerText = "登録中...";
+
+        // 役職の文字列作成
+        const selectedRoles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(el => el.value);
+        const roles = selectedRoles.length > 0 ? selectedRoles.join('/') : "一般";
+
+        try {
+            // ユーザープロフィールの取得
+            const profile = await liff.getProfile();
+            
+            // GASへ送るデータ構造
+            const formData = {
+                userId: profile.userId,
+                displayName: profile.displayName,
+                lastName: lastName,
+                firstName: firstName,
+                ageGeneration: ageGeneration,
+                hanban: hanStr,
+                koban: kobanStr,
+                roles: roles,
+                nonMember: isNonMemberChecked ? "YES" : "NO",
+                deviceInfo: `UA:${navigator.userAgent} | PLAT:${navigator.platform} | LANG:${navigator.language}`
+            };
+
+            // GASへデータ送信
+            await fetch(GAS_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(formData)
+            });
+
+            // 送信完了後のメッセージ
+            if (liff.isInClient()) {
+                await liff.sendMessages([{ type: 'text', text: "登録・更新を完了しました" }]).catch(e => console.log(e));
+            }
+
+            // 画面表示の切り替え
+            document.getElementById('input-form').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+
+        } catch (error) {
+            console.error(error);
+            alert("送信に失敗しました。もう一度お試しください。");
+            btn.disabled = false;
+            btn.innerText = "この内容で登録する";
+        }
+    }
+</script>
+</body>
+</html>
